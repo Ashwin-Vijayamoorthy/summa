@@ -1,43 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Dropdown Menu</title>
-<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Github profile AJAX</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<style>
+		img{
+			height: 100%;
+			width: 100%;
+		}
+	</style>
 </head>
 <body>
+	<center><h1 class="header">GitHub Profile Viewer</h1></center>
+	<br><br>
+	<div class="container">
+		<form id="userform" >
+			<div class="form-group">
+				<label>Github Username: </label>
+				<input  id="username" type="text" class="form-control">
+			</div>
+		</form>
+	<div id="profile"></div>
+	</div>
+<script>
+	function getProfile(e){
+		e.preventDefault();
+		console.log('Fetching...');
+		// var username='ashwin-vijayamoorthy';
+		var username= document.getElementById('username').value;
+										//  let username = prompt('Enter the name?');
+										// document.getElementById('username').innerHTML=username;
 
-<h2>Welcome</h2>
-<p><u>Columns & Flexbox</u></p>
-<br>
-<nav class="menu">
-<ul>
-<li id="a"><a href="#a">web Design</a>
+		if (!username || username=='') {
+			username='ashwin-vijayamoorthy';
+		}
 
-<div> <hr><strong>HTML:</strong> <a href="#">
-Basic HTML</a> | <a href="#">HTML5</a>
-<hr><strong>CSS:</strong><a href="#">css3</a> 
-| <a href="#">CSS Animation</a>
-</div>
-</li>
+		var xhttp=new XMLHttpRequest();
+		xhttp.onreadystatechange= function(){
+			if (xhttp.readyState==4 && xhttp.status==200) {
+				var user= JSON.parse(xhttp.responseText);
+				document.getElementById('profile').innerHTML=`
+					<div class="panel panel-default">
+					<div class="panel-heading">
+					<h3 class="panel-title">Login Name:- ${user.login }</h3> 
+					</div>
+					<div class="panel-body">
+					<div class="row">
+					<div class="col-md-3">
+					<img src="${user.avatar_url}">
+					</div>
+					<div class="col-md-9">
+					<ul class="list-group">
+					<span class="label label-primary">Public Repost ${user.public_repos}</span>
+					<span class="label label-danger">Public Gists ${user.public_gists}</span>
+					<br><br>
+					<li class="list-group-item"><b>Bio: </b> ${user.bio}</li>
+					<li class="list-group-item"><b>Twitter username:</b> ${user.twitter_username}</li>
+					<li class="list-group-item"><b>Followers:</b> ${user.followers} || <b>Following:</b> ${user.following}</li>
+					<br>
+					<a class="btn btn-default" target="blank" href="${user.html_url}">Vist Github</a>
+					
+					</div>
+					</div> 
+					</div>
+					</div>`;
+			}
+		}
+		xhttp.open('GET', 'https://api.github.com/users/'+username, true);
+		xhttp.send();
 
-<li id="b"><a href="#b">web Programming</a>
+	}
+	// getProfile();   <---default method calling 	
+	document.getElementById('userform').addEventListener('submit',getProfile, false);
+	
+</script>
 
-<div> <hr><strong>Frontend :</strong> <a href="#">
-JavaScript</a> | <a href="#">JQuery</a>
-<hr><strong>Backend:</strong><a href="#">Node.Js</a> 
-| <a href="#">PHP</a>
-</div>
-</li>
-
-<li id="c"><a href="#c">Graphic Design</a>
-
-<div> <hr><strong>Graphic:</strong> <a href="#">
-Photographer</a> | <a href="#">llustrator</a>
-<hr><strong>3D Animation:</strong><a href="#">IN design</a> 
-| <a href="#">Flash</a>
-</div>
-</li>
-</ul>
-</nav>
 </body>
-</html> 
+</html>
